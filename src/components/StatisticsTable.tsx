@@ -177,9 +177,11 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
 
   const totalSummary = data.reduce((acc, item) => {
     // 根据 avgUnitPrice + expectedProfit 重新计算平台服务费
-    const expectedTotal = item.avgUnitPrice + (item.expectedProfit ?? 0);
+    // 服务费 = 销售价
+    const expectedTotal = (item.avgUnitPrice + (item.expectedProfit ?? 0)) * item.orderCount;
     const recalculatedPlatformFee = calculatePlatformFee(expectedTotal);
-
+    // console.log("商品:", item.goodName, "旧平台服务费:", acc.totalPlatformFee, "期望总金额:", expectedTotal, "重新计算平台服务费:", recalculatedPlatformFee);
+    console.log(item.avgUnitPrice, "商品:", item.goodName, '期望的利润', item.expectedProfit, "期望总金额:", expectedTotal, '顶单数:', item.orderCount)
     return {
       orderCount: acc.orderCount + item.orderCount,
       totalSales: acc.totalSales + item.totalSales,

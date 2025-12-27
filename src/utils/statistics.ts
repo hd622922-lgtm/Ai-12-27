@@ -10,9 +10,9 @@ export function calculatePlatformFee(salesPrice: number): number {
   const threshold = 10000
   
   if (salesPrice <= threshold) {
-    return salesPrice * 0.0006
+    return salesPrice * 0.06
   } else {
-    return threshold * 0.0006 + (salesPrice - threshold) * 0.01
+    return threshold * 0.06 + (salesPrice - threshold) * 0.01
   }
 }
 
