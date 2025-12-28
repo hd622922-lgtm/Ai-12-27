@@ -186,7 +186,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
 
   const handleExport = async () => {
     const date = new Date().toISOString().split('T')[0]
-    await exportToExcel(data, `流水统计_${date}.xlsx`)
+    await exportToExcel(data, totalSummary, `流水统计_${date}.xlsx`)
   }
 
   const totalSummary = data.reduce((acc, item) => {
