@@ -1,8 +1,6 @@
 /**
  * Calculates platform fee based on sales price
  * Rule: 
- * - Sales price <= 10,000: fee = sales price * 0.06%
- * - Sales price > 10,000: fee = 10,000 * 0.06% + (sales price - 10,000) * 1%
  * @param salesPrice - The sales price to calculate fee for
  * @returns Platform fee amount
  */
@@ -10,9 +8,9 @@ export function calculatePlatformFee(salesPrice: number): number {
   const threshold = 10000
   
   if (salesPrice <= threshold) {
-    return salesPrice * 0.06
+    return salesPrice * 0.006
   } else {
-    return threshold * 0.06 + (salesPrice - threshold) * 0.01
+    return threshold * 0.006 + (salesPrice - threshold) * 0.01
   }
 }
 
