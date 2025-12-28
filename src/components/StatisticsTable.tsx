@@ -40,6 +40,13 @@ function getStateDisplay(orderStates: { [key: number]: number }): React.ReactNod
 export default function StatisticsTable({ data, onExpectedProfitChange }: StatisticsTableProps) {
   const columns: ColumnsType<OrderStatistics> = [
     {
+      title: '序号',
+      key: 'index',
+      width: 40,
+      fixed: 'left',
+      render: (_, __, index) => index + 1
+    },
+    {
       title: '商品名称',
       dataIndex: 'goodName',
       key: 'goodName',
@@ -47,7 +54,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       fixed: 'left'
     },
     {
-      title: '单数',
+      title: '订单数',
       dataIndex: 'orderCount',
       key: 'orderCount',
       width: 50,
@@ -66,7 +73,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       dataIndex: 'expectedProfit',
       key: 'expectedProfit',
       width: 60,
-      render: (value: number, record: OrderStatistics, index: number) => {
+      render: (value: number, record: OrderStatistics) => {
         // 如果没有设置期望利润，则默认为0
         const profitValue = value !== undefined ? value : 0.2;
         return (
@@ -90,8 +97,8 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       title: '平台服务费',
       dataIndex: 'totalPlatformFee',
       key: 'totalPlatformFee',
-      width: 60,
-      render: (value: number, record: OrderStatistics) => {
+      width: 50,
+      render: (_: number, record: OrderStatistics) => {
         // 根据 avgUnitPrice + expectedProfit 重新计算平台服务费
         const expectedTotal = record.avgUnitPrice + (record.expectedProfit ?? 0.2);
         const recalculatedPlatformFee = calculatePlatformFee(expectedTotal);
@@ -132,7 +139,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       dataIndex: 'totalCost',
       key: 'totalCost',
       width: 80,
-      render: (value: number, record: OrderStatistics) => {
+      render: (_: number, record: OrderStatistics) => {
         // 总成本 = 总货源价 + 平台服务费
         // 重新计算平台服务费
         const expectedTotal = (record.avgUnitPrice + (record.expectedProfit ?? 0.2)) * record.orderCount;
@@ -146,22 +153,12 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
         return costA - costB;
       }
     },
-
-
-    {
-      title: '订单状态',
-      dataIndex: 'orderStates',
-      key: 'orderStates',
-      width: 120,
-      fixed: 'right',
-      render: (orderStates: { [key: number]: number }) => getStateDisplay(orderStates)
-    },
     {
       title: '总收益',
       dataIndex: 'totalProfit',
       key: 'totalProfit',
       width: 80,
-      render: (value: number, record: OrderStatistics) => {
+      render: (_: number, record: OrderStatistics) => {
         // 总收益 = 已完成订单数 * 期望利润
         const completedOrderCount = record.orderStates[3] || 0; // 状态3为已完成
         const expectedTotalProfit = completedOrderCount * (record.expectedProfit ?? 0.2);
@@ -175,21 +172,15 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
         return profitA - profitB;
       }
     },
+
+
     {
-      title: '平均收益',
-      dataIndex: 'avgProfit',
-      key: 'avgProfit',
-      width: 80,
-      render: (value: number) => `¥${value.toFixed(2)}`,
-      sorter: (a, b) => a.avgProfit - b.avgProfit
-    },
-    {
-      title: '收益率(%)',
-      dataIndex: 'profitMargin',
-      key: 'profitMargin',
-      width: 80,
-      render: (value: number) => `${value.toFixed(2)}%`,
-      sorter: (a, b) => a.profitMargin - b.profitMargin
+      title: '订单状态',
+      dataIndex: 'orderStates',
+      key: 'orderStates',
+      width: 60,
+      fixed: 'right',
+      render: (orderStates: { [key: number]: number }) => getStateDisplay(orderStates)
     }
   ]
 
@@ -275,6 +266,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
         pagination={{ pageSize: 20 }}
         scroll={{ x: 1810 }}
         size="middle"
+        rowClassName={(_, index) => index % 2 === 0 ? 'table-row-even' : 'table-row-odd'}
       />
     </Card>
   )
