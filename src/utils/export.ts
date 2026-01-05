@@ -59,16 +59,16 @@ export async function exportToExcel(data: OrderStatistics[], summaryData: Summar
       index: index + 1,
       goodName: row.goodName,
       orderCount: row.orderCount,
-      avgUnitPrice: row.avgUnitPrice.toFixed(2),
-      expectedProfit: (row.expectedProfit ?? 0.2).toFixed(2),
-      totalPlatformFee: (row.totalPlatformFee).toFixed(2), // Using the calculated value from the table
+      avgUnitPrice: row.avgUnitPrice.toFixed(4),
+      expectedProfit: (row.expectedProfit ?? 0.3).toFixed(4),
+      totalPlatformFee: (row.totalPlatformFee).toFixed(4), // Using the calculated value from the table
       totalRefundCount: row.totalRefundCount,
-      totalRefundAmount: row.totalRefundAmount.toFixed(2),
-      totalSales: row.totalSales.toFixed(2),
-      totalCost: row.totalCost.toFixed(2),
+      totalRefundAmount: row.totalRefundAmount.toFixed(4),
+      totalSales: row.totalSales.toFixed(4),
+      totalCost: row.totalCost.toFixed(4),
       orderStates: formatOrderStates(row.orderStates),
-      totalProfit: row.totalProfit.toFixed(2),
-      profitMargin: row.profitMargin.toFixed(2)
+      totalProfit: row.totalProfit.toFixed(4),
+      profitMargin: row.profitMargin.toFixed(4)
     })
   })
 
@@ -79,12 +79,12 @@ export async function exportToExcel(data: OrderStatistics[], summaryData: Summar
 
   // Add summary information at the bottom
   worksheet.addRow(['总订单数:', summaryData.orderCount])
-  worksheet.addRow(['总货源价:', `¥${summaryData.totalSales.toFixed(2)}`])
-  worksheet.addRow(['总成本:', `¥${summaryData.totalCost.toFixed(2)}`])
-  worksheet.addRow(['平台服务费:', `¥${summaryData.totalPlatformFee.toFixed(2)}`])
+  worksheet.addRow(['总货源价:', `¥${summaryData.totalSales.toFixed(4)}`])
+  worksheet.addRow(['总成本:', `¥${summaryData.totalCost.toFixed(4)}`])
+  worksheet.addRow(['平台服务费:', `¥${summaryData.totalPlatformFee.toFixed(4)}`])
   worksheet.addRow(['总退款数:', summaryData.totalRefundCount])
-  worksheet.addRow(['总退款金额:', `¥${summaryData.totalRefundAmount.toFixed(2)}`])
-  worksheet.addRow(['总收益:', `¥${summaryData.totalProfit.toFixed(2)}`])
+  worksheet.addRow(['总退款金额:', `¥${summaryData.totalRefundAmount.toFixed(4)}`])
+  worksheet.addRow(['总收益:', `¥${summaryData.totalProfit.toFixed(4)}`])
 
   // Style the summary section at the bottom
   const totalRows = worksheet.rowCount;

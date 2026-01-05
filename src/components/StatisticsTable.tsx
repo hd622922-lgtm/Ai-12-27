@@ -65,7 +65,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       dataIndex: 'avgUnitPrice',
       key: 'avgUnitPrice',
       width: 60,
-      render: (value: number) => `¥${value.toFixed(2)}`,
+      render: (value: number) => `¥${value.toFixed(4)}`,
       sorter: (a, b) => a.avgUnitPrice - b.avgUnitPrice
     },
     {
@@ -75,7 +75,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       width: 60,
       render: (value: number, record: OrderStatistics) => {
         // 如果没有设置期望利润，则默认为0
-        const profitValue = value !== undefined ? value : 0.2;
+        const profitValue = value !== undefined ? value : 0.3;
         return (
           <input
             type="number"
@@ -91,7 +91,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
           />
         );
       },
-      sorter: (a, b) => (a.expectedProfit ?? 0.2) - (b.expectedProfit ?? 0.2)
+      sorter: (a, b) => (a.expectedProfit ?? 0.3) - (b.expectedProfit ?? 0.3)
     },
     {
       title: '平台服务费',
@@ -100,13 +100,13 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       width: 50,
       render: (_: number, record: OrderStatistics) => {
         // 根据 avgUnitPrice + expectedProfit 重新计算平台服务费
-        const expectedTotal = record.avgUnitPrice + (record.expectedProfit ?? 0.2);
+        const expectedTotal = record.avgUnitPrice + (record.expectedProfit ?? 0.3);
         const recalculatedPlatformFee = calculatePlatformFee(expectedTotal);
-        return `¥${recalculatedPlatformFee.toFixed(2)}`;
+        return `¥${recalculatedPlatformFee.toFixed(4)}`;
       },
       sorter: (a, b) => {
-        const feeA = calculatePlatformFee(a.avgUnitPrice + (a.expectedProfit ?? 0.2));
-        const feeB = calculatePlatformFee(b.avgUnitPrice + (b.expectedProfit ?? 0.2));
+        const feeA = calculatePlatformFee(a.avgUnitPrice + (a.expectedProfit ?? 0.3));
+        const feeB = calculatePlatformFee(b.avgUnitPrice + (b.expectedProfit ?? 0.3));
         return feeA - feeB;
       }
     },
@@ -123,7 +123,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       dataIndex: 'totalRefundAmount',
       key: 'totalRefundAmount',
       width: 80,
-      render: (value: number) => value > 0 ? <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>¥{value.toFixed(2)}</span> : `¥${value.toFixed(2)}`,
+      render: (value: number) => value > 0 ? <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>¥{value.toFixed(4)}</span> : `¥${value.toFixed(4)}`,
       sorter: (a, b) => a.totalRefundAmount - b.totalRefundAmount
     },
     {
@@ -131,7 +131,7 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       dataIndex: 'totalSales',
       key: 'totalSales',
       width: 80,
-      render: (value: number) => `¥${value.toFixed(2)}`,
+      render: (value: number) => `¥${value.toFixed(4)}`,
       sorter: (a, b) => a.totalSales - b.totalSales
     },
     {
@@ -142,14 +142,14 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       render: (_: number, record: OrderStatistics) => {
         // 总成本 = 总货源价 + 平台服务费
         // 重新计算平台服务费
-        const expectedTotal = (record.avgUnitPrice + (record.expectedProfit ?? 0.2)) * record.orderCount;
+        const expectedTotal = (record.avgUnitPrice + (record.expectedProfit ?? 0.3)) * record.orderCount;
         const recalculatedPlatformFee = calculatePlatformFee(expectedTotal);
         const newTotalCost = record.totalSales + recalculatedPlatformFee;
-        return `¥${newTotalCost.toFixed(2)}`;
+        return `¥${newTotalCost.toFixed(4)}`;
       },
       sorter: (a, b) => {
-        const costA = a.totalSales + calculatePlatformFee((a.avgUnitPrice + (a.expectedProfit ?? 0.2)) * a.orderCount);
-        const costB = b.totalSales + calculatePlatformFee((b.avgUnitPrice + (b.expectedProfit ?? 0.2)) * b.orderCount);
+        const costA = a.totalSales + calculatePlatformFee((a.avgUnitPrice + (a.expectedProfit ?? 0.3)) * a.orderCount);
+        const costB = b.totalSales + calculatePlatformFee((b.avgUnitPrice + (b.expectedProfit ?? 0.3)) * b.orderCount);
         return costA - costB;
       }
     },
@@ -161,14 +161,14 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
       render: (_: number, record: OrderStatistics) => {
         // 总收益 = 已完成订单数 * 期望利润
         const completedOrderCount = record.orderStates[3] || 0; // 状态3为已完成
-        const expectedTotalProfit = completedOrderCount * (record.expectedProfit ?? 0.2);
-        return `¥${expectedTotalProfit.toFixed(2)}`;
+        const expectedTotalProfit = completedOrderCount * (record.expectedProfit ?? 0.3);
+        return `¥${expectedTotalProfit.toFixed(4)}`;
       },
       sorter: (a, b) => {
         const completedOrderCountA = a.orderStates[3] || 0;
         const completedOrderCountB = b.orderStates[3] || 0;
-        const profitA = completedOrderCountA * (a.expectedProfit ?? 0.2);
-        const profitB = completedOrderCountB * (b.expectedProfit ?? 0.2);
+        const profitA = completedOrderCountA * (a.expectedProfit ?? 0.3);
+        const profitB = completedOrderCountB * (b.expectedProfit ?? 0.3);
         return profitA - profitB;
       }
     },
@@ -192,11 +192,11 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
   const totalSummary = data.reduce((acc, item) => {
     // 根据 avgUnitPrice + expectedProfit 重新计算平台服务费
     // 服务费 = 销售价
-    const expectedTotal = (item.avgUnitPrice + (item.expectedProfit ?? 0.2)) * item.orderCount;
+    const expectedTotal = (item.avgUnitPrice + (item.expectedProfit ?? 0.3)) * item.orderCount;
     const recalculatedPlatformFee = calculatePlatformFee(expectedTotal);
     // 计算新的总收益 = 已完成订单数 * 期望利润
     const completedOrderCount = item.orderStates[3] || 0; // 状态3为已完成
-    const newTotalProfit = completedOrderCount * (item.expectedProfit ?? 0.2);
+    const newTotalProfit = completedOrderCount * (item.expectedProfit ?? 0.3);
     // 计算新的总成本 = 总货源价 + 平台服务费
     const newTotalCost = item.totalSales + recalculatedPlatformFee;
     // console.log("商品:", item.goodName, "旧平台服务费:", acc.totalPlatformFee, "期望总金额:", expectedTotal, "重新计算平台服务费:", recalculatedPlatformFee);
@@ -234,15 +234,15 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
           </div>
           <div>
             <strong>总货源价：</strong>
-            <span style={{ fontSize: 16, color: '#52c41a' }}>¥{totalSummary.totalSales.toFixed(2)}</span>
+            <span style={{ fontSize: 16, color: '#52c41a' }}>¥{totalSummary.totalSales.toFixed(4)}</span>
           </div>
           <div>
             <strong>总成本：</strong>
-            <span style={{ fontSize: 16, color: '#faad14' }}>¥{totalSummary.totalCost.toFixed(2)}</span>
+            <span style={{ fontSize: 16, color: '#faad14' }}>¥{totalSummary.totalCost.toFixed(4)}</span>
           </div>
           <div>
             <strong>平台服务费：</strong>
-            <span style={{ fontSize: 16, color: '#ff4d4f' }}>¥{totalSummary.totalPlatformFee.toFixed(2)}</span>
+            <span style={{ fontSize: 16, color: '#ff4d4f' }}>¥{totalSummary.totalPlatformFee.toFixed(4)}</span>
           </div>
 
           <div>
@@ -251,11 +251,11 @@ export default function StatisticsTable({ data, onExpectedProfitChange }: Statis
           </div>
           <div>
             <strong>总退款金额：</strong>
-            <span style={{ fontSize: 16, color: '#ff4d4f', fontWeight: 'bold' }}>¥{totalSummary.totalRefundAmount.toFixed(2)}</span>
+            <span style={{ fontSize: 16, color: '#ff4d4f', fontWeight: 'bold' }}>¥{totalSummary.totalRefundAmount.toFixed(4)}</span>
           </div>
           <div>
             <strong>总收益：</strong>
-            <span style={{ fontSize: 16, color: '#722ed1', fontWeight: 'bold' }}>¥{totalSummary.totalProfit.toFixed(2)}</span>
+            <span style={{ fontSize: 16, color: '#722ed1', fontWeight: 'bold' }}>¥{totalSummary.totalProfit.toFixed(4)}</span>
           </div>
         </div>
       </Space>
